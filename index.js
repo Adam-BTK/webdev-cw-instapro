@@ -69,13 +69,14 @@ export const goToPage = (newPage, data) => {
         });
     }
 
-    if (newPage === USER_POSTS_PAGE) {
+    if (newPage === USER_POSTS_PAGE) {      
       // Загружает страницу с постами юзера
 
       console.log("Страница пользователя: ", data.userId);
       page = LOADING_PAGE;
-      renderApp();
       const id = data.userId;
+      console.log(`Тут: ${data.userId}`)
+      renderApp();
 
       return getUserPosts({ token: getToken(), id })
         .then((newPosts) => {
