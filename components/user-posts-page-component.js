@@ -1,7 +1,7 @@
 
 import { renderHeaderComponent } from './header-component.js';
 import { goToPage } from '../index.js';
-import { POSTS_PAGE } from '../routes.js';
+import { USER_POSTS_PAGE } from '../routes.js';
 import { setPostLike, setPostDisLike } from '../api.js';
 import { formatDistance } from 'date-fns';
 import { ru } from 'date-fns/locale';
@@ -15,7 +15,7 @@ export function renderUserPostsPageComponent({ appEl, posts, token }) {
             <img class="post-image" src=${post.imageUrl}>
           </div>
           <div class="post-likes">
-            <button data-post-id=${post.id} class="like-button" data-is-Liked=${post.isLiked
+            <button data-user-id=${posts[0].user.id} data-post-id=${post.id} class="like-button" data-is-Liked=${post.isLiked
         }>
             ${post.isLiked
           ? `<img src="./assets/images/like-active.svg" data-is-Liked=${post.isLiked} class="like-button-img" data-post-id=${post.id}>`
@@ -56,6 +56,15 @@ export function renderUserPostsPageComponent({ appEl, posts, token }) {
     element: document.querySelector('.header-container'),
   });
 
+  for (let userEl of document.querySelectorAll('.post-header')) {
+    userEl.addEventListener('click', () => {
+      goToPage(USER_POSTS_PAGE, {
+        userId: userEl.dataset.userId,
+      });
+      console.log(userEl.dataset.userId);
+    });
+  }
+
   const buttonLike = document.querySelectorAll('.like-button');
   for (const buttonEl of buttonLike) {
     buttonEl.addEventListener('click', () => {
@@ -63,13 +72,13 @@ export function renderUserPostsPageComponent({ appEl, posts, token }) {
       if (buttonEl.dataset.isLiked === 'false') {
         console.log('у кнопки фолс');
         setPostLike({ id, token }).then(() => {
-          goToPage(POSTS_PAGE);
+          goToPage(USER_POSTS_PAGE, { userId: buttonEl.dataset.userId, });
         });
       }
       if (buttonEl.dataset.isLiked === 'true') {
-        console.log('// у кнопки тру');
+        console.log('у кнопки тру');
         setPostDisLike({ id, token }).then(() => {
-          goToPage(POSTS_PAGE);
+          goToPage(USER_POSTS_PAGE, { userId: buttonEl.dataset.userId, });
         });
       }
     });
